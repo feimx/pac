@@ -1,6 +1,8 @@
 <?php
+
 namespace FeiMx\Pac\Contracts;
 
-interface Factory {
+interface Factory
+{
     public function driver($driver = null);
 }

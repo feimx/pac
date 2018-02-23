@@ -2,9 +2,9 @@
 
 namespace FeiMx\Pac\Drivers;
 
+use Illuminate\Support\Facades\Validator;
 use FeiMx\Pac\Contracts\PacDriverInterface;
 use FeiMx\Pac\Exceptions\PacVerificationFailedException;
-use Illuminate\Support\Facades\Validator;
 
 class FinkokDriver extends AbstractDriver implements PacDriverInterface
 {
@@ -36,7 +36,7 @@ class FinkokDriver extends AbstractDriver implements PacDriverInterface
         }
     }
 
-    protected function editUser($rfc, $typeUser = 'O', $added)
+    protected function editUser($rfc, $typeUser, $added)
     {
         throw new \Exception('Method editUser() is not implemented.');
     }
