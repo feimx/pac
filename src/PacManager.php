@@ -3,21 +3,48 @@
 namespace FeiMx\Pac;
 
 use FeiMx\Pac\Contracts\Factory;
+use FeiMx\Pac\Drivers\FinkokDriver;
+use Illuminate\Support\Manager;
+use InvalidArgumentException;
 
-class PacManager implements Factory
+class PacManager extends Manager implements Factory
 {
     protected $app;
-    
+
     /**
-     * Create a new PacManager Instance.
+     * Create a new manager instance.
+     *
+     * @param \Illuminate\Foundation\Application $app
      */
     public function __construct($app)
     {
         $this->app = $app;
     }
 
-    public function driver($driver = null)
+    protected function createFinkokDriver()
     {
-        return $phrase;
+        $config = $this->app['config']['pac.finkok'];
+
+        return $this->buildDriver(
+          FinkokDriver::class,
+            $config
+        );
+    }
+
+    public function buildDriver($driver, $config)
+    {
+        return new $driver(
+            $config['username'], $config['password'], $config['sandbox']
+        );
+    }
+
+    /**
+     * Get the default driver name.
+     *
+     * @return string
+     */
+    public function getDefaultDriver()
+    {
+        throw new InvalidArgumentException('No Pac driver was specified.');
     }
 }
