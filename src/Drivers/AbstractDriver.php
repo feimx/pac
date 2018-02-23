@@ -51,7 +51,7 @@ abstract class AbstractDriver implements PacDriverInterface
 
     abstract protected function addUser($rfc, $params = []);
 
-    abstract protected function editUser($rfc, $typeUser = 'O', $added);
+    abstract protected function editUser($rfc, $typeUser, $added);
 
     abstract protected function getUsers();
 
