@@ -51,7 +51,7 @@
                 "FeiMx\\Pac\\PacServiceProvider"
             ],
             "aliases": {
-                "Pac": "FeiMx\\Pac\\PacFacade"
+                "Pac": "FeiMx\\Pac\\Pac"
             }
         }
     }
