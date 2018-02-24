@@ -2,9 +2,9 @@
 
 namespace FeiMx\Pac\Tests;
 
-use FeiMx\Pac\Tests\Fixtures\PacDriverStub;
 use FeiMx\Pac\PacUser;
 use PHPUnit\Framework\TestCase;
+use FeiMx\Pac\Tests\Fixtures\PacDriverStub;
 
 class UsersTest extends TestCase
 {

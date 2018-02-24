@@ -2,11 +2,11 @@
 
 namespace FeiMx\Pac\Drivers;
 
+use FeiMx\Pac\PacUser;
+use Illuminate\Support\Facades\Validator;
 use FeiMx\Pac\Contracts\PacDriverInterface;
 use FeiMx\Pac\Exceptions\PacErrorException;
 use FeiMx\Pac\Exceptions\PacVerificationFailedException;
-use FeiMx\Pac\PacUser;
-use Illuminate\Support\Facades\Validator;
 
 class FinkokDriver extends AbstractDriver implements PacDriverInterface
 {
@@ -22,18 +22,7 @@ class FinkokDriver extends AbstractDriver implements PacDriverInterface
 
     public function addUser($rfc, $params = [])
     {
-        if (empty($rfc)) {
-            throw new PacVerificationFailedException('The RFC is a necessary fields');
-        }
-
-        $rules = [
-            'type_user' => 'required|in:O,P',
-            'added' => 'required',
-        ];
-
-        if (Validator::make($params, $rules)->fails()) {
-            throw new PacVerificationFailedException('The params did not contain the necessary fields');
-        }
+        $this->throwErrorIfInvalidParams($data = array_merge(['rfc' => $rfc], $params));
 
         $response = $this->request(
             $this->url('registration'),
@@ -45,15 +34,28 @@ class FinkokDriver extends AbstractDriver implements PacDriverInterface
             throw new PacErrorException($response->faultstring);
         }
 
-        if (!$response->addResult->success) {
+        if (! $response->addResult->success) {
             throw new PacErrorException($response->addResult->message);
         }
 
-        if ($response->addResult->message == 'Account Already exists') {
+        if ('Account Already exists' == $response->addResult->message) {
             throw new PacErrorException('The RFC has been registered before');
         }
 
-        return (new PacUser)->map(array_merge(['rfc' => $rfc], $params));
+        return (new PacUser())->map($data);
+    }
+
+    protected function throwErrorIfInvalidParams($params = [])
+    {
+        $rules = [
+            'rfc' => 'required',
+            'type_user' => 'required|in:O,P',
+            'added' => 'required',
+        ];
+
+        if (Validator::make($params, $rules)->fails()) {
+            throw new PacVerificationFailedException('The params did not contain the necessary fields');
+        }
     }
 
     public function editUser($rfc, $params = [])

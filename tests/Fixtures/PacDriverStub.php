@@ -2,10 +2,10 @@
 
 namespace FeiMx\Pac\Tests\Fixtures;
 
-use FeiMx\Pac\Contracts\PacDriverInterface;
-use FeiMx\Pac\Drivers\AbstractDriver;
-use FeiMx\Pac\Exceptions\PacErrorException;
 use FeiMx\Pac\PacUser;
+use FeiMx\Pac\Drivers\AbstractDriver;
+use FeiMx\Pac\Contracts\PacDriverInterface;
+use FeiMx\Pac\Exceptions\PacErrorException;
 
 class PacDriverStub extends AbstractDriver implements PacDriverInterface
 {
