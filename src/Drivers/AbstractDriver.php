@@ -44,7 +44,7 @@ abstract class AbstractDriver implements PacDriverInterface
      *
      * @param string $username
      * @param string $password
-     * @param boolean $sandbox
+     * @param bool $sandbox
      */
     public function __construct($username, $password, $sandbox = true)
     {
