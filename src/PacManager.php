@@ -26,7 +26,7 @@ class PacManager extends Manager implements Factory
         $config = $this->app['config']['pac.finkok'];
 
         return $this->buildDriver(
-          FinkokDriver::class,
+            FinkokDriver::class,
             $config
         );
     }

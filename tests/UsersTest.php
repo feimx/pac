@@ -1,38 +1,62 @@
 <?php
 
-namespace FeiMx\Skeleton\Tests;
+namespace FeiMx\Pac\Tests;
 
+use FeiMx\Pac\Tests\Fixtures\PacDriverStub;
+use FeiMx\Pac\PacUser;
 use PHPUnit\Framework\TestCase;
 
 class UsersTest extends TestCase
 {
+    public function setUp()
+    {
+        parent::setUp();
+        $this->driver = new PacDriverStub('user@example.test', '12345678a', $sandbox = true);
+    }
     public function testDriverCanCreateNewUser()
     {
-        $this->assertTrue(true);
+        $result = $this->driver->addUser('XAXX010101000', ['X' => [1,2,3]]);
+        $this->assertInstanceOf(PacUser::class, $result);
+    }
+    /**
+     * @expectedException \FeiMx\Pac\Exceptions\PacErrorException
+     */
+    public function testExceptionIsThrownIfNotCorrectParams()
+    {
+        $result = $this->driver->addUser('XAXX010101000', [['X' => [1,2,3]]]);
     }
 
     public function testDriverCanSuspendUser()
     {
-        $this->assertTrue(true);
+        $status = 'S';
+        $result = $this->driver->editUser('XAXX010101000', compact('status'));
+        $this->assertEquals($status, $result->status);
     }
 
     public function testDriverCanActiveUser()
     {
-        $this->assertTrue(true);
+        $status = 'A';
+        $result = $this->driver->editUser('XAXX010101000', compact('status'));
+        $this->assertEquals($status, $result->status);
     }
 
     public function testDriverCanGetUsers()
     {
-        $this->assertTrue(true);
+        $result = $this->driver->getUsers();
+        foreach ($result as $user) {
+           $this->assertInstanceOf(PacUser::class, $user);
+        }
     }
 
     public function testDriverCanGetUser()
     {
-        $this->assertTrue(true);
+        $result = $this->driver->getUser($rfc = 'XAXX010101000');
+        $this->assertEquals($rfc, $result->rfc);
     }
 
     public function testDriverCanAssignCreditToUser()
     {
-        $this->assertTrue(true);
+        $result = $this->driver->assignStamps('XAXX010101000', $credit = 100);
+        $this->assertEquals($credit, $result->credit);
     }
 }
