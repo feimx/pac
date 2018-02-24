@@ -2,25 +2,24 @@
 
 namespace FeiMx\Pac\Drivers;
 
-use Illuminate\Support\Facades\Validator;
 use FeiMx\Pac\Contracts\PacDriverInterface;
+use FeiMx\Pac\Exceptions\PacErrorException;
 use FeiMx\Pac\Exceptions\PacVerificationFailedException;
+use Illuminate\Support\Facades\Validator;
 
 class FinkokDriver extends AbstractDriver implements PacDriverInterface
 {
-    // $this->url = $sandbox ? 'http://demo-facturacion.finkok.com/servicios/soap/' : 'https://facturacion.finkok.com/servicios/soap/';
-
-    protected function stamp()
+    public function stamp()
     {
         throw new \Exception('Method stamp() is not implemented.');
     }
 
-    protected function cancel()
+    public function cancel()
     {
         throw new \Exception('Method cancel() is not implemented.');
     }
 
-    protected function addUser($rfc, $params = [])
+    public function addUser($rfc, $params = [])
     {
         if (empty($rfc)) {
             throw new PacVerificationFailedException('The RFC is a necessary fields');
@@ -34,25 +33,48 @@ class FinkokDriver extends AbstractDriver implements PacDriverInterface
         if (Validator::make($params, $rules)->fails()) {
             throw new PacVerificationFailedException('The params did not contain the necessary fields');
         }
+
+        $response = $this->request(
+            $this->url('registration'),
+            'add', 
+            array_merge([
+                'reseller_username' => $this->username,
+                'reseller_password' => $this->password,
+                'taxpayer_id' => $rfc
+            ], $params)
+        );
+
+        if (is_a($response, 'SoapFault')) {
+            throw new PacErrorException("Error Processing Request", $response->faultcode);
+        }
+
+        dd($response);
     }
 
-    protected function editUser($rfc, $typeUser, $added)
+    public function editUser($rfc, $params = [])
     {
         throw new \Exception('Method editUser() is not implemented.');
     }
 
-    protected function getUsers()
+    public function getUsers()
     {
         throw new \Exception('Method getUsers() is not implemented.');
     }
 
-    protected function getUser($rfc = null)
+    public function getUser($rfc = null)
     {
         throw new \Exception('Method getUser() is not implemented.');
     }
 
-    protected function assignStamps($rfc = null)
+    public function assignStamps($rfc = null, $credit = 0)
     {
         throw new \Exception('Method assignStamps() is not implemented.');
+    }
+
+    protected function url($wsdl = null)
+    {
+        return $this->sandbox
+            ? "https://demo-facturacion.finkok.com/servicios/soap/{$wsdl}.wsdl"
+            : "https://facturacion.finkok.com/servicios/soap/{$wsdl}.wsdl";
     }
 }

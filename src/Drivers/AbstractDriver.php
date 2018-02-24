@@ -3,6 +3,8 @@
 namespace FeiMx\Pac\Drivers;
 
 use FeiMx\Pac\Contracts\PacDriverInterface;
+use GuzzleHttp\Client;
+use Meng\AsyncSoap\Guzzle\Factory as SoapFactory;
 
 abstract class AbstractDriver implements PacDriverInterface
 {
@@ -30,6 +32,12 @@ abstract class AbstractDriver implements PacDriverInterface
      * @var array
      */
     protected $parameters = [];
+    /**
+     * The Guzzle Soap Factory.
+     *
+     * @var array
+     */
+    protected $factory;
 
     /**
      * Create a new driver instance.
@@ -43,21 +51,38 @@ abstract class AbstractDriver implements PacDriverInterface
         $this->username = $username;
         $this->password = $password;
         $this->sandbox = $sandbox;
+        $this->factory = new SoapFactory();
     }
 
-    abstract protected function stamp();
+    abstract public function stamp();
 
-    abstract protected function cancel();
+    abstract public function cancel();
 
-    abstract protected function addUser($rfc, $params = []);
+    abstract public function addUser($rfc, $params = []);
 
-    abstract protected function editUser($rfc, $typeUser, $added);
+    abstract public function editUser($rfc, $params = []);
 
-    abstract protected function getUsers();
+    abstract public function getUsers();
 
-    abstract protected function getUser($rfc = null);
+    abstract public function getUser($rfc = null);
 
-    abstract protected function assignStamps($rfc = null);
+    abstract public function assignStamps($rfc = null, $credit = 0);
+
+    abstract protected function url($wsdl = null);
+
+    public function request($url = null, $method = null, $params = [])
+    {
+        $url = $url ?? $this->url();
+
+        try {
+            $response = $this->factory->create(new Client(), $url)
+                        ->{$method}($params);
+
+            return $response->wait();
+        } catch (\SoapFault $e) {
+            return $e;
+        }
+    }
 
     public function xml()
     {
