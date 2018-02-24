@@ -13,17 +13,19 @@ class UsersTest extends TestCase
         parent::setUp();
         $this->driver = new PacDriverStub('user@example.test', '12345678a', $sandbox = true);
     }
+
     public function testDriverCanCreateNewUser()
     {
-        $result = $this->driver->addUser('XAXX010101000', ['X' => [1,2,3]]);
+        $result = $this->driver->addUser('XAXX010101000', ['X' => [1, 2, 3]]);
         $this->assertInstanceOf(PacUser::class, $result);
     }
+
     /**
      * @expectedException \FeiMx\Pac\Exceptions\PacErrorException
      */
     public function testExceptionIsThrownIfNotCorrectParams()
     {
-        $result = $this->driver->addUser('XAXX010101000', [['X' => [1,2,3]]]);
+        $result = $this->driver->addUser('XAXX010101000', [['X' => [1, 2, 3]]]);
     }
 
     public function testDriverCanSuspendUser()
@@ -44,7 +46,7 @@ class UsersTest extends TestCase
     {
         $result = $this->driver->getUsers();
         foreach ($result as $user) {
-           $this->assertInstanceOf(PacUser::class, $user);
+            $this->assertInstanceOf(PacUser::class, $user);
         }
     }
 

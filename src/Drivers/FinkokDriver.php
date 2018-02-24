@@ -5,6 +5,7 @@ namespace FeiMx\Pac\Drivers;
 use FeiMx\Pac\Contracts\PacDriverInterface;
 use FeiMx\Pac\Exceptions\PacErrorException;
 use FeiMx\Pac\Exceptions\PacVerificationFailedException;
+use FeiMx\Pac\PacUser;
 use Illuminate\Support\Facades\Validator;
 
 class FinkokDriver extends AbstractDriver implements PacDriverInterface
@@ -27,7 +28,7 @@ class FinkokDriver extends AbstractDriver implements PacDriverInterface
 
         $rules = [
             'type_user' => 'required|in:O,P',
-            'addedd' => 'required',
+            'added' => 'required',
         ];
 
         if (Validator::make($params, $rules)->fails()) {
@@ -36,19 +37,23 @@ class FinkokDriver extends AbstractDriver implements PacDriverInterface
 
         $response = $this->request(
             $this->url('registration'),
-            'add', 
-            array_merge([
-                'reseller_username' => $this->username,
-                'reseller_password' => $this->password,
-                'taxpayer_id' => $rfc
-            ], $params)
+            'add',
+            $this->prepareGenericParams(array_merge(['taxpayer_id' => $rfc], $params))
         );
 
         if (is_a($response, 'SoapFault')) {
-            throw new PacErrorException("Error Processing Request", $response->faultcode);
+            throw new PacErrorException($response->faultstring);
         }
 
-        dd($response);
+        if (!$response->addResult->success) {
+            throw new PacErrorException($response->addResult->message);
+        }
+
+        if ($response->addResult->message == 'Account Already exists') {
+            throw new PacErrorException('The RFC has been registered before');
+        }
+
+        return (new PacUser)->map(array_merge(['rfc' => $rfc], $params));
     }
 
     public function editUser($rfc, $params = [])
@@ -76,5 +81,13 @@ class FinkokDriver extends AbstractDriver implements PacDriverInterface
         return $this->sandbox
             ? "https://demo-facturacion.finkok.com/servicios/soap/{$wsdl}.wsdl"
             : "https://facturacion.finkok.com/servicios/soap/{$wsdl}.wsdl";
+    }
+
+    protected function prepareGenericParams(array $params = [])
+    {
+        return array_merge([
+            'reseller_username' => $this->username,
+            'reseller_password' => $this->password,
+        ], $params);
     }
 }

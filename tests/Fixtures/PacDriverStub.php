@@ -26,19 +26,19 @@ class PacDriverStub extends AbstractDriver implements PacDriverInterface
             throw new PacErrorException('Error Processing Request');
         }
 
-        return (new PacUser)->map($params);
+        return (new PacUser())->map($params);
     }
 
     public function editUser($rfc, $params = [])
     {
-         return (new PacUser)->map($params);
+        return (new PacUser())->map($params);
     }
 
     public function getUsers()
     {
-        return collect(range(1, rand(5, 10)))->map(function($index) {
-            return (new PacUser)->map([
-                'rfc' => 'XAXX01010100'.($index == 1 ? 0 : rand(1, 5))
+        return collect(range(1, rand(5, 10)))->map(function ($index) {
+            return (new PacUser())->map([
+                'rfc' => 'XAXX01010100'.(1 == $index ? 0 : rand(1, 5)),
             ]);
         });
     }
@@ -50,7 +50,7 @@ class PacDriverStub extends AbstractDriver implements PacDriverInterface
 
     public function assignStamps($rfc = null, $credit = 0)
     {
-         return $this->getUser($rfc)->map(compact('credit'));
+        return $this->getUser($rfc)->map(compact('credit'));
     }
 
     protected function url($wsdl = null)

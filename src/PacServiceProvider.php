@@ -24,6 +24,10 @@ class PacServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->mergeConfigFrom(
+            __DIR__.'/../config/pac.php', 'pac'
+        );
+
         $this->app->singleton(Factory::class, function ($app) {
             return new PacManager($app);
         });
