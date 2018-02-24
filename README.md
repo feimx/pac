@@ -19,7 +19,7 @@ composer require feimx/Pac
 ## Usage
 
 ``` php
-$result = FeiMx\Pac\PacFacade::driver('finkok')->stamp();
+$result = FeiMx\Pac\Pac::driver('finkok')->stamp();
 dd($result);
 ```
 
@@ -48,7 +48,7 @@ If you discover any security related issues, please email yorch@fei.com.mx inste
 
 ## Support us
 
-Spatie is a webdesign agency based in Antwerp, Belgium. You'll find an overview of all our open source projects [on our website](https://fei.com.mx/opensource).
+FEI is a Digital Invoicing startup based in Yucatán, México. You'll find an overview of all our open source projects [on our website](https://fei.com.mx/opensource).
 
 Does your business depend on our contributions? Reach out and support us on [Patreon](https://www.patreon.com/jorge_andrade). 
 All pledges will be dedicated to allocating workforce on maintenance and new awesome stuff.
