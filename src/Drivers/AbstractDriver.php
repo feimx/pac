@@ -2,8 +2,8 @@
 
 namespace FeiMx\Pac\Drivers;
 
-use FeiMx\Pac\Contracts\PacDriverInterface;
 use GuzzleHttp\Client;
+use FeiMx\Pac\Contracts\PacDriverInterface;
 use Meng\AsyncSoap\Guzzle\Factory as SoapFactory;
 
 abstract class AbstractDriver implements PacDriverInterface
@@ -23,7 +23,7 @@ abstract class AbstractDriver implements PacDriverInterface
     /**
      * The driver sandbox.
      *
-     * @var string
+     * @var bool
      */
     protected $sandbox;
     /**
@@ -35,7 +35,7 @@ abstract class AbstractDriver implements PacDriverInterface
     /**
      * The Guzzle Soap Factory.
      *
-     * @var array
+     * @var \Meng\AsyncSoap\Guzzle\Factory
      */
     protected $factory;
 
@@ -43,8 +43,8 @@ abstract class AbstractDriver implements PacDriverInterface
      * Create a new driver instance.
      *
      * @param string $username
-     * @param string $clientSecret
-     * @param string $sandbox
+     * @param string $password
+     * @param boolean $sandbox
      */
     public function __construct($username, $password, $sandbox = true)
     {
