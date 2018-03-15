@@ -1,5 +1,5 @@
 {
-    "name": "feimx/Pac",
+    "name": "feimx/pac",
     "description": "This Package allow to conect multiple Pac providers sistem",
     "keywords": [
         "feimx",
@@ -7,7 +7,7 @@
         "cfdi",
         "facturacion electronica"
     ],
-    "homepage": "https://github.com/feimx/Pac",
+    "homepage": "https://github.com/feimx/pac",
     "license": "MIT",
     "authors": [
         {
