@@ -1,10 +1,10 @@
 # Very short description of the package
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/feimx/Pac.svg?style=flat-square)](https://packagist.org/packages/feimx/Pac)
-[![Build Status](https://img.shields.io/travis/feimx/Pac/master.svg?style=flat-square)](https://travis-ci.org/feimx/Pac)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/feimx/pac.svg?style=flat-square)](https://packagist.org/packages/feimx/pac)
+[![Build Status](https://img.shields.io/travis/feimx/pac/master.svg?style=flat-square)](https://travis-ci.org/feimx/pac)
 [![SensioLabsInsight](https://img.shields.io/sensiolabs/i/xxxxxxxxx.svg?style=flat-square)](https://insight.sensiolabs.com/projects/xxxxxxxxx)
-[![Quality Score](https://img.shields.io/scrutinizer/g/feimx/Pac.svg?style=flat-square)](https://scrutinizer-ci.com/g/feimx/Pac)
-[![Total Downloads](https://img.shields.io/packagist/dt/feimx/Pac.svg?style=flat-square)](https://packagist.org/packages/feimx/Pac)
+[![Quality Score](https://img.shields.io/scrutinizer/g/feimx/pac.svg?style=flat-square)](https://scrutinizer-ci.com/g/feimx/pac)
+[![Total Downloads](https://img.shields.io/packagist/dt/feimx/pac.svg?style=flat-square)](https://packagist.org/packages/feimx/pac)
 
 This is where your description should go. Try and limit it to a paragraph or two, and maybe throw in a mention of what PSRs you support to avoid any confusion with users and contributors.
 
@@ -13,7 +13,7 @@ This is where your description should go. Try and limit it to a paragraph or two
 You can install the package via composer:
 
 ```bash
-composer require feimx/Pac
+composer require feimx/pac
 ```
 
 ## Usage
