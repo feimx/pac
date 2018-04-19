@@ -24,4 +24,16 @@ class PacStamp
 
         return $this;
     }
+
+    public function toArray()
+    {
+        return [
+            'xml' => $this->xml,
+            'uuid' => $this->uuid,
+            'date' => $this->date,
+            'status_code' => $this->statusCode,
+            'sat_seal' => $this->satSeal,
+            'sat_certificate_number' => $this->satCertificateNumber,
+        ];
+    }
 }
