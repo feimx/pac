@@ -2,9 +2,11 @@
 
 namespace FeiMx\Pac\Tests\Fixtures;
 
+use ArrayAccess;
 use FeiMx\Pac\Contracts\PacDriverInterface;
 use FeiMx\Pac\Drivers\AbstractDriver;
 use FeiMx\Pac\Exceptions\PacErrorException;
+use FeiMx\Pac\PacStamp;
 use FeiMx\Pac\PacUser;
 
 class PacDriverStub extends AbstractDriver implements PacDriverInterface
@@ -33,7 +35,7 @@ class PacDriverStub extends AbstractDriver implements PacDriverInterface
         return (new PacUser())->map($params);
     }
 
-    public function getUsers(): array
+    public function getUsers(): ArrayAccess
     {
         return collect(range(1, rand(5, 10)))->map(function ($index) {
             return (new PacUser())->map([

@@ -2,6 +2,7 @@
 
 namespace FeiMx\Pac\Drivers;
 
+use ArrayAccess;
 use FeiMx\Pac\Contracts\PacDriverInterface;
 use FeiMx\Pac\PacStamp;
 use FeiMx\Pac\PacUser;
@@ -64,7 +65,7 @@ abstract class AbstractDriver implements PacDriverInterface
 
     abstract public function editUser($rfc, $params = []);
 
-    abstract public function getUsers(): array;
+    abstract public function getUsers(): ArrayAccess;
 
     abstract public function getUser($rfc = null): PacUser;
 

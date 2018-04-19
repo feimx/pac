@@ -2,6 +2,7 @@
 
 namespace FeiMx\Pac\Drivers;
 
+use ArrayAccess;
 use FeiMx\Pac\Contracts\PacDriverInterface;
 use FeiMx\Pac\Exceptions\PacErrorException;
 use FeiMx\Pac\Exceptions\PacVerificationFailedException;
@@ -102,7 +103,7 @@ class FinkokDriver extends AbstractDriver implements PacDriverInterface
         return $response->editResult->message;
     }
 
-    public function getUsers(): array
+    public function getUsers(): ArrayAccess
     {
         $response = $this->request($this->url('registration'), 'get', $this->prepareGenericParams(['taxpayer_id' => '']));
 
@@ -110,10 +111,12 @@ class FinkokDriver extends AbstractDriver implements PacDriverInterface
             throw new PacErrorException($response->faultstring);
         }
 
-        $users = [];
+        $users = collect([]);
         foreach ($response->getResult->users->ResellerUser as $resellerUser) {
-            $users[] = (new PacUser())->map(
-                $this->mapToAttributes($resellerUser)
+            $users->push(
+                (new PacUser())->map(
+                    $this->mapToAttributes($resellerUser)
+                )
             );
         }
 
