@@ -56,7 +56,7 @@ abstract class AbstractDriver implements PacDriverInterface
 
     abstract public function stamp($xml);
 
-    abstract public function cancel($params = []);
+    abstract public function cancel(array $uuids, $rfc, $cer, $key);
 
     abstract public function addUser($rfc, $params = []);
 

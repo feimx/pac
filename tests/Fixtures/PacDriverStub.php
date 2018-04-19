@@ -14,7 +14,7 @@ class PacDriverStub extends AbstractDriver implements PacDriverInterface
         throw new \Exception('Method stamp() is not implemented.');
     }
 
-    public function cancel($params = [])
+    public function cancel(array $uuids, $rfc, $cer, $key)
     {
         throw new \Exception('Method cancel() is not implemented.');
     }
