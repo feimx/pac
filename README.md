@@ -1,4 +1,4 @@
-# Very short description of the package
+# Documentation in construction
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/feimx/pac.svg?style=flat-square)](https://packagist.org/packages/feimx/pac)
 [![Build Status](https://img.shields.io/travis/feimx/pac/master.svg?style=flat-square)](https://travis-ci.org/feimx/pac)

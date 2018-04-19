@@ -2,8 +2,10 @@
 
 namespace FeiMx\Pac\Drivers;
 
-use GuzzleHttp\Client;
 use FeiMx\Pac\Contracts\PacDriverInterface;
+use FeiMx\Pac\PacStamp;
+use FeiMx\Pac\PacUser;
+use GuzzleHttp\Client;
 use Meng\AsyncSoap\Guzzle\Factory as SoapFactory;
 
 abstract class AbstractDriver implements PacDriverInterface
@@ -44,7 +46,7 @@ abstract class AbstractDriver implements PacDriverInterface
      *
      * @param string $username
      * @param string $password
-     * @param bool $sandbox
+     * @param bool   $sandbox
      */
     public function __construct($username, $password, $sandbox = true)
     {
@@ -54,17 +56,17 @@ abstract class AbstractDriver implements PacDriverInterface
         $this->factory = new SoapFactory();
     }
 
-    abstract public function stamp($xml);
+    abstract public function stamp($xml): PacStamp;
 
     abstract public function cancel(array $uuids, $rfc, $cer, $key);
 
-    abstract public function addUser($rfc, $params = []);
+    abstract public function addUser($rfc, $params = []): PacUser;
 
     abstract public function editUser($rfc, $params = []);
 
-    abstract public function getUsers();
+    abstract public function getUsers(): array;
 
-    abstract public function getUser($rfc = null);
+    abstract public function getUser($rfc = null): PacUser;
 
     abstract public function assignStamps($rfc = null, $credit = 0);
 
