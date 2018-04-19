@@ -2,20 +2,38 @@
 
 namespace FeiMx\Pac\Drivers;
 
-use FeiMx\Pac\PacUser;
-use Illuminate\Support\Facades\Validator;
 use FeiMx\Pac\Contracts\PacDriverInterface;
 use FeiMx\Pac\Exceptions\PacErrorException;
 use FeiMx\Pac\Exceptions\PacVerificationFailedException;
+use FeiMx\Pac\PacStamp;
+use FeiMx\Pac\PacUser;
+use Illuminate\Support\Facades\Validator;
 
 class FinkokDriver extends AbstractDriver implements PacDriverInterface
 {
-    public function stamp()
+    public function stamp($xml)
     {
-        throw new \Exception('Method stamp() is not implemented.');
+        $response = $this->request(
+            $this->url('stamp'),
+            'Stamp',
+            $this->prepareStampParams(['xml' => $xml])
+        );
+
+        if (is_a($response, 'SoapFault')) {
+            throw new PacErrorException($response->faultstring);
+        }
+
+        if (!isset($response->stampResult->UUID)) {
+            throw new PacErrorException(
+                $response->stampResult->Incidencias->Incidencia->MensajeIncidencia,
+                $response->stampResult->Incidencias->Incidencia->CodigoError
+            );
+        }
+
+        return (new PacStamp())->map($this->stampResultToAttributes($response->stampResult));
     }
 
-    public function cancel()
+    public function cancel($params = [])
     {
         throw new \Exception('Method cancel() is not implemented.');
     }
@@ -34,7 +52,7 @@ class FinkokDriver extends AbstractDriver implements PacDriverInterface
             throw new PacErrorException($response->faultstring);
         }
 
-        if (! $response->addResult->success) {
+        if (!$response->addResult->success) {
             throw new PacErrorException($response->addResult->message);
         }
 
@@ -91,5 +109,25 @@ class FinkokDriver extends AbstractDriver implements PacDriverInterface
             'reseller_username' => $this->username,
             'reseller_password' => $this->password,
         ], $params);
+    }
+
+    protected function prepareStampParams(array $params = [])
+    {
+        return array_merge([
+            'username' => $this->username,
+            'password' => $this->password,
+        ], $params);
+    }
+
+    protected function stampResultToAttributes($stampResult)
+    {
+        return [
+            'xml' => $stampResult->xml,
+            'uuid' => $stampResult->UUID,
+            'date' => $stampResult->Fecha,
+            'statusCode' => $stampResult->CodEstatus,
+            'satSeal' => $stampResult->SatSeal,
+            'satCertificateNumber' => $stampResult->NoCertificadoSAT,
+        ];
     }
 }

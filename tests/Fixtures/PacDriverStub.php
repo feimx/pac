@@ -2,27 +2,26 @@
 
 namespace FeiMx\Pac\Tests\Fixtures;
 
-use FeiMx\Pac\PacUser;
-use FeiMx\Pac\Drivers\AbstractDriver;
 use FeiMx\Pac\Contracts\PacDriverInterface;
+use FeiMx\Pac\Drivers\AbstractDriver;
 use FeiMx\Pac\Exceptions\PacErrorException;
+use FeiMx\Pac\PacUser;
 
 class PacDriverStub extends AbstractDriver implements PacDriverInterface
 {
-    public function stamp()
+    public function stamp($xml)
     {
         throw new \Exception('Method stamp() is not implemented.');
     }
 
-    public function cancel()
+    public function cancel($params = [])
     {
         throw new \Exception('Method cancel() is not implemented.');
     }
 
     public function addUser($rfc, $params = [])
     {
-        $response = $this->request(null, 'GetStatistics', $params);
-        if (is_a($response, 'SoapFault')) {
+        if (!isset($params['X'])) {
             throw new PacErrorException('Error Processing Request');
         }
 

@@ -54,9 +54,9 @@ abstract class AbstractDriver implements PacDriverInterface
         $this->factory = new SoapFactory();
     }
 
-    abstract public function stamp();
+    abstract public function stamp($xml);
 
-    abstract public function cancel();
+    abstract public function cancel($params = []);
 
     abstract public function addUser($rfc, $params = []);
 
