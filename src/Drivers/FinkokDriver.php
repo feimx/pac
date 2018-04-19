@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 class FinkokDriver extends AbstractDriver implements PacDriverInterface
 {
-    public function stamp($xml)
+    public function stamp($xml): PacStamp
     {
         $response = $this->request(
             $this->url('stamp'),
@@ -58,7 +58,7 @@ class FinkokDriver extends AbstractDriver implements PacDriverInterface
         return $this->cancelResultToAttributes($response->cancelResult);
     }
 
-    public function addUser($rfc, $params = [])
+    public function addUser($rfc, $params = []): PacUser
     {
         $this->throwErrorIfInvalidParams($data = array_merge(['rfc' => $rfc], $params));
 
@@ -83,6 +83,82 @@ class FinkokDriver extends AbstractDriver implements PacDriverInterface
         return (new PacUser())->map($data);
     }
 
+    public function editUser($rfc, $params = [])
+    {
+        $response = $this->request(
+            $this->url('registration'),
+            'edit',
+            $this->prepareGenericParams(array_merge(['taxpayer_id' => $rfc], $params))
+        );
+
+        if (is_a($response, 'SoapFault')) {
+            throw new PacErrorException($response->faultstring);
+        }
+
+        if (!$response->editResult->success) {
+            throw new PacErrorException($response->editResult->message);
+        }
+
+        return $response->editResult->message;
+    }
+
+    public function getUsers(): array
+    {
+        $response = $this->request($this->url('registration'), 'get', $this->prepareGenericParams(['taxpayer_id' => '']));
+
+        if (is_a($response, 'SoapFault')) {
+            throw new PacErrorException($response->faultstring);
+        }
+
+        $users = [];
+        foreach ($response->getResult->users->ResellerUser as $resellerUser) {
+            $users[] = (new PacUser())->map(
+                $this->mapToAttributes($resellerUser)
+            );
+        }
+
+        return $users;
+    }
+
+    public function getUser($rfc = null): PacUser
+    {
+        $response = $this->request($this->url('registration'), 'get', $this->prepareGenericParams(['taxpayer_id' => $rfc]));
+
+        if (is_a($response, 'SoapFault')) {
+            throw new PacErrorException($response->faultstring);
+        }
+
+        return (new PacUser())->map(
+            $this->mapToAttributes($response->getResult->users->ResellerUser)
+        );
+    }
+
+    public function assignStamps($rfc = null, $credit = 0)
+    {
+        $response = $this->request(
+            $this->url('registration'),
+            'assign',
+            $this->prepareStampParams(['taxpayer_id' => $rfc, 'credit' => $credit])
+        );
+
+        if (is_a($response, 'SoapFault')) {
+            throw new PacErrorException($response->faultstring);
+        }
+
+        if (!$response->assignResult->success) {
+            throw new PacErrorException($response->assignResult->message);
+        }
+
+        return $response->assignResult->message;
+    }
+
+    protected function url($wsdl = null)
+    {
+        return $this->sandbox
+            ? "https://demo-facturacion.finkok.com/servicios/soap/{$wsdl}.wsdl"
+            : "https://facturacion.finkok.com/servicios/soap/{$wsdl}.wsdl";
+    }
+
     protected function throwErrorIfInvalidParams($params = [])
     {
         $rules = [
@@ -96,34 +172,7 @@ class FinkokDriver extends AbstractDriver implements PacDriverInterface
         }
     }
 
-    public function editUser($rfc, $params = [])
-    {
-        throw new \Exception('Method editUser() is not implemented.');
-    }
-
-    public function getUsers()
-    {
-        throw new \Exception('Method getUsers() is not implemented.');
-    }
-
-    public function getUser($rfc = null)
-    {
-        throw new \Exception('Method getUser() is not implemented.');
-    }
-
-    public function assignStamps($rfc = null, $credit = 0)
-    {
-        throw new \Exception('Method assignStamps() is not implemented.');
-    }
-
-    protected function url($wsdl = null)
-    {
-        return $this->sandbox
-            ? "https://demo-facturacion.finkok.com/servicios/soap/{$wsdl}.wsdl"
-            : "https://facturacion.finkok.com/servicios/soap/{$wsdl}.wsdl";
-    }
-
-    protected function prepareGenericParams(array $params = [])
+    protected function prepareGenericParams(array $params = []): array
     {
         return array_merge([
             'reseller_username' => $this->username,
@@ -131,7 +180,7 @@ class FinkokDriver extends AbstractDriver implements PacDriverInterface
         ], $params);
     }
 
-    protected function prepareStampParams(array $params = [])
+    protected function prepareStampParams(array $params = []): array
     {
         return array_merge([
             'username' => $this->username,
@@ -139,7 +188,7 @@ class FinkokDriver extends AbstractDriver implements PacDriverInterface
         ], $params);
     }
 
-    protected function stampResultToAttributes($stampResult)
+    protected function stampResultToAttributes($stampResult): array
     {
         return [
             'xml' => $stampResult->xml,
@@ -151,13 +200,23 @@ class FinkokDriver extends AbstractDriver implements PacDriverInterface
         ];
     }
 
-    protected function cancelResultToAttributes($cancelResult)
+    protected function cancelResultToAttributes($cancelResult): array
     {
         return [
             'folios' => $cancelResult->Folios,
             'acuse' => $cancelResult->Acuse,
             'date' => Carbon::parse($cancelResult->Fecha),
             'rfc' => $cancelResult->RfcEmisor,
+        ];
+    }
+
+    protected function mapToAttributes($resellerUser): array
+    {
+        return [
+            'status' => $resellerUser->status,
+            'counter' => $resellerUser->counter,
+            'credit' => $resellerUser->credit,
+            'rfc' => $resellerUser->taxpayer_id,
         ];
     }
 }

@@ -6,9 +6,11 @@ class PacUser
 {
     public $rfc;
 
-    public $type = 'O';
+    public $type = 'P';
 
-    public $credit;
+    public $credit = 0;
+
+    public $counter = 0;
 
     public $status = 'A';
 

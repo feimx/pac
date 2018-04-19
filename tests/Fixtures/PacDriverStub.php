@@ -9,7 +9,7 @@ use FeiMx\Pac\PacUser;
 
 class PacDriverStub extends AbstractDriver implements PacDriverInterface
 {
-    public function stamp($xml)
+    public function stamp($xml): PacStamp
     {
         throw new \Exception('Method stamp() is not implemented.');
     }
@@ -19,7 +19,7 @@ class PacDriverStub extends AbstractDriver implements PacDriverInterface
         throw new \Exception('Method cancel() is not implemented.');
     }
 
-    public function addUser($rfc, $params = [])
+    public function addUser($rfc, $params = []): PacUser
     {
         if (!isset($params['X'])) {
             throw new PacErrorException('Error Processing Request');
@@ -33,7 +33,7 @@ class PacDriverStub extends AbstractDriver implements PacDriverInterface
         return (new PacUser())->map($params);
     }
 
-    public function getUsers()
+    public function getUsers(): array
     {
         return collect(range(1, rand(5, 10)))->map(function ($index) {
             return (new PacUser())->map([
@@ -42,7 +42,7 @@ class PacDriverStub extends AbstractDriver implements PacDriverInterface
         });
     }
 
-    public function getUser($rfc = null)
+    public function getUser($rfc = null): PacUser
     {
         return $this->getUsers()->where('rfc', $rfc)->first();
     }
