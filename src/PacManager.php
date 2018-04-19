@@ -2,10 +2,10 @@
 
 namespace FeiMx\Pac;
 
-use InvalidArgumentException;
-use Illuminate\Support\Manager;
 use FeiMx\Pac\Contracts\Factory;
 use FeiMx\Pac\Drivers\FinkokDriver;
+use Illuminate\Support\Manager;
+use InvalidArgumentException;
 
 class PacManager extends Manager implements Factory
 {
