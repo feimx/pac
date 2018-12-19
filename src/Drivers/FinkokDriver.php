@@ -26,10 +26,7 @@ class FinkokDriver extends AbstractDriver implements PacDriverInterface
         }
 
         if (!isset($response->stampResult->UUID)) {
-            throw new PacErrorException(
-                $response->stampResult->Incidencias->Incidencia->MensajeIncidencia,
-                $response->stampResult->Incidencias->Incidencia->CodigoError
-            );
+            throw new PacErrorException($response->stampResult->Incidencias->Incidencia->MensajeIncidencia);
         }
 
         return (new PacStamp())->map($this->stampResultToAttributes($response->stampResult));
