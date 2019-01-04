@@ -63,7 +63,7 @@ class FinkokDriver extends AbstractDriver implements PacDriverInterface
         }
 
         $canceledStatus = $response->cancelResult->Folios->Folio->EstatusCancelacion ?? null;
-        if ($canceledStatus && preg_match('/Cancelación|Cancelado/', $statusUuid)) {
+        if ($canceledStatus && preg_match('/Cancelación|Cancelado/', $canceledStatus)) {
             throw new CfdiAlreadyCanceledException('El comprobante ya ha sido cancelado.');
         }
 
