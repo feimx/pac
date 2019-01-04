@@ -4,6 +4,9 @@ namespace FeiMx\Pac\Drivers;
 
 use ArrayAccess;
 use FeiMx\Pac\Contracts\PacDriverInterface;
+use FeiMx\Pac\Exceptions\CfdiAlreadyCanceledException;
+use FeiMx\Pac\Exceptions\CfdiInProcessException;
+use FeiMx\Pac\Exceptions\CfdiNotCancelableException;
 use FeiMx\Pac\Exceptions\PacErrorException;
 use FeiMx\Pac\Exceptions\PacVerificationFailedException;
 use FeiMx\Pac\PacStamp;
@@ -51,6 +54,25 @@ class FinkokDriver extends AbstractDriver implements PacDriverInterface
 
         if (isset($response->cancelResult->CodEstatus)) {
             throw new PacErrorException($response->cancelResult->CodEstatus);
+        }
+
+        $statusUuid = $response->cancelResult->Folios->Folio->EstatusUUID ?? null;
+
+        if ($statusUuid && in_array($statusUuid, [708, 205])) {
+            throw new PacErrorException('Ocurrio un error con el SAT, al intentar cancelar el comprobante.');
+        }
+
+        $canceledStatus = $response->cancelResult->Folios->Folio->EstatusCancelacion ?? null;
+        if ($canceledStatus && preg_match('/Cancelación|Cancelado/', $statusUuid)) {
+            throw new CfdiAlreadyCanceledException('El comprobante ya ha sido cancelado.');
+        }
+
+        if ($statusUuid && 'no_cancelable' == $statusUuid) {
+            throw new CfdiNotCancelableException();
+        }
+
+        if ($statusUuid && 'En proceso' == $statusUuid) {
+            throw new CfdiInProcessException();
         }
 
         return $this->cancelResultToAttributes($response->cancelResult);
