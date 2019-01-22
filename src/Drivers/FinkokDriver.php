@@ -237,7 +237,7 @@ class FinkokDriver extends AbstractDriver implements PacDriverInterface
     {
         return [
             'folios' => $cancelResult->Folios,
-            'acuse' => $cancelResult->Acuse,
+            'acuse' => $cancelResult->Acuse ?? null,
             'date' => Carbon::parse($cancelResult->Fecha),
             'rfc' => $cancelResult->RfcEmisor,
         ];
